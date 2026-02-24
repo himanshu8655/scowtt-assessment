@@ -11,12 +11,16 @@ export default function Onboarding() {
   const router = useRouter();
 
   useEffect(() => {
-    apiGet<MeResponse>("/api/me")
-      .then(() => undefined)
-      .catch(() => {
-        router.push("/");
-      });
-  }, [router]);
+    const checkAuthentication = async () => {
+      try {
+        await apiGet("/api/auth/check");
+      } catch {
+        setLoading(false);
+        window.location.href = "/";
+      }
+    };
+    checkAuthentication();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
